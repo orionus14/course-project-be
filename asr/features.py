@@ -10,7 +10,7 @@ def load_audio(file_path, sr=16000):
     return audio
 
 
-def extract_log_mel_spectrogram(audio, sr=16000, n_mels=80, n_fft=400, hop_length=160):
+def extract_log_mel(audio, sr=16000, n_mels=80, n_fft=400, hop_length=160):
     """
     Обчислення log-mel спектрограми
     """
