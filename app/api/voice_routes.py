@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Query, HTTPException, Depends
+from fastapi import APIRouter, UploadFile, File, Query, HTTPException, Depends, Body
 from fastapi.responses import FileResponse
 import os
 import uuid
@@ -10,7 +10,8 @@ from app.services.voice_service import (
     create_voice_record,
     get_user_voice_records,
     get_voice_record_by_id,
-    delete_voice_record
+    delete_voice_record,
+    update_voice_record_text
 )
 from app.models.voice_model import voice_record_entity, voice_records_entity
 from app.schemas.voice_schema import VoiceRecordResponse
@@ -109,6 +110,20 @@ async def get_record(
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
     return voice_record_entity(record)
+
+
+@router.patch("/records/{record_id}")
+async def update_record(
+    record_id: str,
+    text: str = Body(..., embed=True),
+    current_user: dict = Depends(get_current_user)
+):
+    """Оновлює текст запису"""
+    success = update_voice_record_text(
+        record_id, str(current_user["_id"]), text)
+    if not success:
+        raise HTTPException(status_code=404, detail="Record not found")
+    return {"message": "Record updated successfully", "text": text}
 
 
 @router.delete("/records/{record_id}")

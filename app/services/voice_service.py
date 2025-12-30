@@ -11,7 +11,8 @@ def create_voice_record(user_id: str, text: str, language: str, engine: str, aud
         "language": language,
         "engine": engine,
         "audio_filename": audio_filename,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
     }
     result = voice_records_collection.insert_one(record)
     record["_id"] = result.inserted_id
@@ -32,6 +33,23 @@ def get_voice_record_by_id(record_id: str, user_id: str):
         "_id": ObjectId(record_id),
         "user_id": ObjectId(user_id)
     })
+
+
+def update_voice_record_text(record_id: str, user_id: str, new_text: str):
+    """Оновлює текст запису"""
+    result = voice_records_collection.update_one(
+        {
+            "_id": ObjectId(record_id),
+            "user_id": ObjectId(user_id)
+        },
+        {
+            "$set": {
+                "text": new_text,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    return result.modified_count > 0
 
 
 def delete_voice_record(record_id: str, user_id: str):
