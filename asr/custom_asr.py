@@ -8,7 +8,7 @@ try:
     from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
     TRANSFORMERS_AVAILABLE = True
 except ImportError as e:
-    print(f"⚠️  Transformers недоступний: {e}")
+    print(f"  Transformers недоступний: {e}")
     print(f"Встановіть: pip install transformers torch torchvision")
     TRANSFORMERS_AVAILABLE = False
 
@@ -29,14 +29,14 @@ if TRANSFORMERS_AVAILABLE:
         print(f"Завантаження Wav2Vec2 моделі...")
         print(f"Device: {DEVICE}")
 
-        # Завантаження з HuggingFace (НЕ з локального safetensors!)
+        # Завантаження з HuggingFace
         processor = Wav2Vec2Processor.from_pretrained(MODEL_NAME)
         model = Wav2Vec2ForCTC.from_pretrained(MODEL_NAME).to(DEVICE)
         model.eval()
 
-        print(f"✓ Модель завантажена: {MODEL_NAME}")
+        print(f" Модель завантажена: {MODEL_NAME}")
     except Exception as e:
-        print(f"❌ Помилка завантаження моделі: {e}")
+        print(f" Помилка завантаження моделі: {e}")
         print(f"\nПереконайтесь:")
         print(f"1. Є інтернет (модель завантажується з HuggingFace)")
         print(f"2. Встановлені: pip install transformers torch librosa")
@@ -69,11 +69,11 @@ def transcribe_custom(file_path: str) -> dict:
             "error": "Модель не завантажена. Перевірте інтернет-з'єднання."
         }
 
-    # Конвертація WebM → WAV
+    # Конвертація WebM в WAV
     wav_path = file_path.replace(".webm", "_custom.wav")
 
     try:
-        # Використовуємо subprocess замість os.system (безпечніше)
+        # Використовуємо subprocess замість os.system
         result = subprocess.run([
             "ffmpeg", "-y", "-i", file_path,
             "-ar", "16000", "-ac", "1",
@@ -93,7 +93,7 @@ def transcribe_custom(file_path: str) -> dict:
             "error": "FFmpeg не знайдено. Додайте його до PATH."
         }
 
-    # Завантаження аудіо через librosa (краще ніж soundfile)
+    # Завантаження аудіо через librosa
     try:
         audio, sr = librosa.load(wav_path, sr=16000, mono=True)
 
@@ -134,7 +134,7 @@ def transcribe_custom(file_path: str) -> dict:
 
     except Exception as e:
         transcription = ""
-        print(f"⚠️  Помилка розпізнавання: {e}")
+        print(f"  Помилка розпізнавання: {e}")
         import traceback
         traceback.print_exc()
 
@@ -159,16 +159,16 @@ if __name__ == "__main__":
     print("="*70)
 
     if not TRANSFORMERS_AVAILABLE:
-        print("❌ Transformers недоступний")
+        print(" Transformers недоступний")
         print("\nВстановіть залежності:")
         print("  pip install transformers torch torchvision librosa")
         exit(1)
 
     if model is None:
-        print("❌ Модель не завантажена")
+        print(" Модель не завантажена")
         exit(1)
 
-    print("✓ Модель готова")
+    print(" Модель готова")
     print(f"\nДля тестування:")
     print(f"  result = transcribe_custom('test.webm')")
     print(f"  print(result)")

@@ -198,7 +198,7 @@ def save_checkpoint(epoch, model, optimizer, val_loss, is_best=False):
     # Найкращий checkpoint
     if is_best:
         torch.save(checkpoint, MODEL_OUT)
-        print(f"  ✓ Найкраща модель збережена: {MODEL_OUT}")
+        print(f"  Найкраща модель збережена: {MODEL_OUT}")
 
     return checkpoint_path
 
@@ -216,7 +216,7 @@ def load_checkpoint():
         print(f"  Val loss: {checkpoint['val_loss']:.4f}")
         return checkpoint
     except Exception as e:
-        print(f"⚠️  Помилка завантаження checkpoint: {e}")
+        print(f"  Помилка завантаження checkpoint: {e}")
         return None
 
 
@@ -306,7 +306,7 @@ def train():
                     # Перевірка на NaN/Inf
                     if torch.isnan(loss) or torch.isinf(loss):
                         print(
-                            f"\n⚠️  NaN/Inf loss в батчі {batch_idx}, пропускаємо...")
+                            f"\n  NaN/Inf loss в батчі {batch_idx}, пропускаємо...")
                         continue
 
                     # Backward
